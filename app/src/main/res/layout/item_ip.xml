@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="2sp"
+    android:clickable="true"
+    android:layout_height="wrap_content"
+    android:focusable="true">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/mainCard"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        app:cardElevation="0dp"
+        android:backgroundTint="@color/transparent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="@dimen/cancionListaCornerRadius1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="20sp"
+            >
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewLista"
+                android:layout_width="15sp"
+                android:layout_height="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="2sp"
+                android:layout_marginBottom="2sp"
+                android:layout_marginStart="13sp"
+                app:cardElevation="10sp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_centerHorizontal="true"
+                android:elevation="12dp"
+                app:cardCornerRadius="7.5sp">
+
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/textViewCancion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="@+id/cardViewLista"
+                app:layout_constraintStart_toEndOf="@+id/cardViewLista"
+                app:layout_constraintTop_toTopOf="@+id/cardViewLista" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,15 +4,152 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/fondoOscuro"
+    tools:context=".MainActivity" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/cardTop"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cardTitleHeight"
+        android:background="@drawable/gradient"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="10sp"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/gradient"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                android:layout_width="@dimen/cardTitleHeight"
+                android:padding="10sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/textView"
+                android:layout_height="@dimen/cardTitleHeight"
+                app:srcCompat="@drawable/icon" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/vaimp_size"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VAIMP Remote" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/cardBottom"
+        app:contentInsetStart="0dp"
+        android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="@dimen/bottom_card_size">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/gradient_bottom"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imageViewPlay"
+                android:backgroundTint="@color/transparent"
+                android:layout_width="@dimen/play_btn_radius"
+                android:layout_height="@dimen/play_btn_radius"
+                app:cardCornerRadius="37.5sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    app:srcCompat="@drawable/playicon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </ImageView>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:focusable="true"
+                android:clickable="true"
+                app:cardCornerRadius="31sp"
+                android:backgroundTint="@color/transparent"
+                android:id="@+id/imageViewPrev"
+                android:layout_width="62sp"
+                android:layout_height="62sp"
+                android:layout_marginEnd="10sp"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/imageViewPlay"
+                app:layout_constraintEnd_toStartOf="@+id/imageViewPlay"
+                app:layout_constraintTop_toTopOf="@+id/imageViewPlay"
+                 >
+
+                <ImageView
+                    app:srcCompat="@drawable/previousbtnom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </ImageView>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:backgroundTint="@color/transparent"
+                app:cardCornerRadius="31sp"
+                android:focusable="true"
+                android:clickable="true"
+                android:id="@+id/imageViewNext"
+                android:layout_width="62sp"
+                android:layout_height="62sp"
+                android:layout_marginStart="10sp"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/imageViewPlay"
+                app:layout_constraintStart_toEndOf="@id/imageViewPlay"
+                app:layout_constraintTop_toTopOf="@+id/imageViewPlay"
+                >
+
+                <ImageView
+                    app:srcCompat="@drawable/nextbtnom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                </ImageView>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:id="@+id/recyclerCanciones"
+        android:layout_width="match_parent"
+        android:layoutAnimation="@anim/layout_animation"
+        android:layout_height="0dp"
+        tools:listitem="@layout/item_cancion"
+        app:layout_constraintTop_toBottomOf="@id/cardTop"
+        app:layout_constraintBottom_toTopOf="@id/cardBottom"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="66dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

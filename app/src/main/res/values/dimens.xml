@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cardTitleHeight">65sp</dimen>
+    <dimen name="vaimp_size">25sp</dimen>
+    <dimen name="bottom_card_size">100sp</dimen>
+    <dimen name="marginLogo">10sp</dimen>
+    <dimen name="play_btn_radius">75sp</dimen>
+    <dimen name="ivCancion">50sp</dimen>
+    <dimen name="cancionListaCornerRadius1">15sp</dimen>
+</resources>
