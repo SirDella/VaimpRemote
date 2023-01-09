@@ -1,11 +1,13 @@
 package com.sirdella.vaimpremote
 
+import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,9 +17,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.File
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -79,7 +86,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        Log.d("cosas", "fin mainActivity")
+        /*
+        GlobalScope.launch{
+            val file = File(applicationContext.getExternalFilesDir(null), "app.apk")
+            if (file.exists()) file.delete()
+            file.appendBytes(URL("https://github.com/SirDella/VaimpRemote/raw/master/app/build/outputs/apk/debug/app-debug.apk").readBytes())
+
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", file)
+            intent.setDataAndType(uri, "application/vnd.android.package-archive")
+            applicationContext.startActivity(intent);
+        }
+         */
+
+        Log. d("cosas", "fin mainActivity")
     }
 
     class broadcastReceiver(callback: (Boolean) -> Unit): BroadcastReceiver() {
