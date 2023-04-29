@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.drawable.GradientDrawable
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -29,6 +31,7 @@ import java.net.URL
 class MainActivity : AppCompatActivity() {
 
     lateinit var receiver: broadcastReceiver
+    lateinit var mediaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +104,53 @@ class MainActivity : AppCompatActivity() {
             applicationContext.startActivity(intent);
         }
          */
+        /*
+        GlobalScope.launch{
+            val file = File(applicationContext.getExternalFilesDir(null), "song.m4a")
+            if (file.exists()) file.delete()
+            file.appendBytes(URL("http://192.168.1.37:5045/dou").readBytes())
+
+        }
+
+         */
+
+
+        mediaPlayer = MediaPlayer()
+        GlobalScope.launch {
+            var audioUrl = "http://sirdella.ddns.net:5045/dou"
+
+            // on below line we are setting audio stream
+            // type as stream music on below line.
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+
+            // on below line we are running a try
+            // and catch block for our media player.
+            try {
+                val file = File(applicationContext.getExternalFilesDir(null), "song.mp3")
+                if (file.exists()) file.delete()
+                file.appendBytes(URL("http://sirdella.ddns.net:5045/dou").readBytes())
+                // on below line we are setting audio
+                // source as audio url on below line.
+                //mediaPlayer.setDataSource("/storage/emulated/0/Android/data/com.sirdella.vaimpremote/files/song.mp3")
+                mediaPlayer.setDataSource(audioUrl)
+                // on below line we are
+                // preparing our media player.
+                mediaPlayer.prepare()
+
+                // on below line we are
+                // starting our media player.
+                mediaPlayer.start()
+
+            } catch (e: Exception) {
+
+                // on below line we are handling our exception.
+                e.printStackTrace()
+            }
+
+
+        }
+
+
 
         Log. d("cosas", "fin mainActivity")
     }

@@ -113,6 +113,24 @@ class vaimpService {
         }
     }
 
+    fun StopMusic(ip: String, callbackRespuesta: (Boolean) -> Unit)
+    {
+        GlobalScope.launch (Dispatchers.IO){
+            var respuesta = ""
+            try {
+                //var url = URL("http://" + ip + "/isVAIMP"
+                respuesta = requestGET("http://" + ip + "/StopMusic")
+            } catch (e: Exception) {
+                Log.d("cosas", ip + " " + e.toString())
+                callbackRespuesta(false)
+            }
+            if (respuesta.contains("OK")) {
+                Log.d("cosas", respuesta + ": " + ip)
+                callbackRespuesta(true)
+            }
+        }
+    }
+
 
 
     fun requestGET(url: String, timeout: Int = 2000): String {
