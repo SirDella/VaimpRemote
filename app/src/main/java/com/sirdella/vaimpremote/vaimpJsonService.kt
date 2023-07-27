@@ -51,7 +51,6 @@ class vaimpJsonService()
 
     fun GetPlaybackState(ip: String, callbackResultado: (PlaybackStateDC) -> Unit)
     {
-        Log.d("cosas", "GetPlaybackState inicio")
         var json = ""
         try {
             json = URL("http://" + ip + "/GetPlaybackState").readText()
@@ -63,6 +62,5 @@ class vaimpJsonService()
         {
             callbackResultado(cancion)
         }
-        Log.d("cosas", "GetPlaybackState fin")
     }
 }

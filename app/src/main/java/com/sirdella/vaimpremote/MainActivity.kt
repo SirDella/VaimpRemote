@@ -1,15 +1,11 @@
 package com.sirdella.vaimpremote
 
-import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Configuration
-import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,16 +13,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.Math.abs
 import java.net.URL
+import kotlin.system.measureTimeMillis
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -114,41 +113,118 @@ class MainActivity : AppCompatActivity() {
 
          */
 
-
         mediaPlayer = MediaPlayer()
-        GlobalScope.launch {
-            var audioUrl = "http://sirdella.ddns.net:5045/dou"
+        var currentSong = ""
+        var seekDelay=0;
+        var callDelay=-999;
+        var downloading = false
+        var cooldown = 0
+        var resync = false
 
-            // on below line we are setting audio stream
-            // type as stream music on below line.
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        var timer = Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run()
+            {
+                try {
+                    var playbackState = PlaybackStateDC()
+                    if (measureTimeMillis {
+                            app.repoVaimp!!.servicioVaimpJson.GetPlaybackState(app.repoVaimp!!.mainIp!!, callbackResultado = {
+                                playbackState = it
+                            })
+                    } > callDelay)
+                    {
+                        callDelay++
+                    }
+                    else
+                    {
+                        callDelay--
+                    }
 
-            // on below line we are running a try
-            // and catch block for our media player.
-            try {
-                val file = File(applicationContext.getExternalFilesDir(null), "song.mp3")
-                if (file.exists()) file.delete()
-                file.appendBytes(URL("http://sirdella.ddns.net:5045/dou").readBytes())
-                // on below line we are setting audio
-                // source as audio url on below line.
-                //mediaPlayer.setDataSource("/storage/emulated/0/Android/data/com.sirdella.vaimpremote/files/song.mp3")
-                mediaPlayer.setDataSource(audioUrl)
-                // on below line we are
-                // preparing our media player.
-                mediaPlayer.prepare()
+                    if (playbackState.Songname != currentSong && !downloading) {
+                        downloading = true
+                        currentSong = playbackState.Songname
+                        Log.d("latency", "Inicio descarga $currentSong")
+                        runOnUiThread{
+                            Toast.makeText(applicationContext, "Descargando ${currentSong}", Toast.LENGTH_SHORT).show()
+                        }
 
-                // on below line we are
-                // starting our media player.
-                mediaPlayer.start()
+                        GlobalScope.launch {
+                            var audioUrl = "http://sirdella.ddns.net:5045/dou"
+                            try {
+                                val file = File(
+                                    applicationContext.getExternalFilesDir(null),
+                                    "song.mp3"
+                                )
+                                if (file.exists()) file.delete()
+                                file.appendBytes(URL("http://" + app.repoVaimp!!.mainIp + "/dou").readBytes())
 
-            } catch (e: Exception) {
+                                mediaPlayer.reset()
+                                mediaPlayer.setDataSource(file.absolutePath)
+                                mediaPlayer.prepare()
 
-                // on below line we are handling our exception.
-                e.printStackTrace()
+                                val callDelay2 = measureTimeMillis {
+                                    app.repoVaimp!!.servicioVaimpJson.GetPlaybackState(app.repoVaimp!!.mainIp!!, callbackResultado = {
+                                        playbackState = it
+                                    })
+                                }.toInt()
+
+                                if (callDelay<=0)
+                                {
+                                    callDelay = callDelay2
+                                }
+
+                                mediaPlayer.start()
+
+                                resync = true
+                                downloading = false
+                            } catch (e: Exception) {
+                                // on below line we are handling our exception.
+                                Log.d("latency", e.toString())
+                            }
+                        }
+                    }
+                    Log.d("latency", "SongPos: ${(playbackState.SongPos*1000).toInt()}, currentPosition: ${mediaPlayer.currentPosition} seekLatency: $seekDelay, callDelay: $callDelay")
+
+                    if ((resync && (currentSong == playbackState.Songname && !downloading && cooldown<=0)))
+                    {
+                        reSync(playbackState)
+                    }
+
+                    if (abs((playbackState.SongPos * 1000) - mediaPlayer.currentPosition) > 2000)
+                    {
+                        resync = true
+                    }
+
+                    if (!playbackState.IsPlaying && mediaPlayer.isPlaying)
+                    {
+                        mediaPlayer.pause()
+                    }
+
+                    if (playbackState.IsPlaying && !mediaPlayer.isPlaying)
+                    {
+                        mediaPlayer.start()
+                        resync = true
+                    }
+
+                    if ((((playbackState.SongPos*1000) + callDelay) - mediaPlayer.currentPosition) > seekDelay) seekDelay++;
+                    else if (seekDelay > 0) seekDelay--;
+
+                    if (cooldown>0) cooldown--
+                }
+                catch (e: Exception)
+                {
+                    Log.e("exceptions", e.toString())
+                }
             }
 
+            private fun reSync(playbackState: PlaybackStateDC) {
+                val seekTo = (playbackState.SongPos * 1000).toInt() + callDelay + seekDelay
+                Log.d("latency", "seekTo: $seekTo")
+                mediaPlayer.seekTo(seekTo)
+                cooldown = 5
+                resync = false
+            }
+        }, 0, 1000)
 
-        }
 
 
 
@@ -165,7 +241,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var adapterRecycler: CancionAdapter
     lateinit var rvLista: RecyclerView
 
-    class CancionAdapter(private val contexto: Context, private val callbackClick: (SongListDC) -> Unit) : RecyclerView.Adapter<CancionVH>() {
+    class CancionAdapter(private val contexto: Context?, private val callbackClick: (SongListDC) -> Unit) : RecyclerView.Adapter<CancionVH>() {
 
         var canciones = listOf<SongListDC>()
 
@@ -186,11 +262,11 @@ class MainActivity : AppCompatActivity() {
 
             if(cancion.ImgUrl=="")
             {
-                Glide.with(contexto).load(R.drawable.defaultsongimage).transition(DrawableTransitionOptions.withCrossFade()).centerCrop().into(holder.ivImagen)
+                Glide.with(contexto!!).load(R.drawable.defaultsongimage).transition(DrawableTransitionOptions.withCrossFade()).centerCrop().into(holder.ivImagen)
             }
             else
             {
-                Glide.with(contexto).load(cancion.ImgUrl).transition(DrawableTransitionOptions.withCrossFade()).centerCrop().into(holder.ivImagen)
+                Glide.with(contexto!!).load(cancion.ImgUrl).transition(DrawableTransitionOptions.withCrossFade()).centerCrop().into(holder.ivImagen)
             }
             holder.tvNombre.text = cancion.Name
 
