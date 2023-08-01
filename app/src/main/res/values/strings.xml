@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">VAIMP Remote</string>
+    <string name="app_name" translatable="false">VAIMP Remote</string>
+    <string name="string_error">Connection error, retrying...</string>
+    <string name="string_buscar">Search</string>
 </resources>

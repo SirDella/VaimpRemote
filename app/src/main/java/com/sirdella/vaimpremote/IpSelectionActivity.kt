@@ -1,5 +1,6 @@
 package com.sirdella.vaimpremote
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.Inet4Address
 import java.net.NetworkInterface
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -60,6 +62,22 @@ class IpSelectionActivity : AppCompatActivity() {
 
         busquedaIps(servicioVaimpIp, refreshLayout, app)
         app.repoVaimp!!.iniciarJsonService()
+
+        var timer = Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                if (app.repoVaimp != null && app.repoVaimp!!.mainIp != null)
+                {
+                    servicioVaimpIp.isVAIMP(app.repoVaimp!!.mainIp!!){
+                        if (it)
+                        {
+                            app.repoVaimp!!.actualizarIp()
+                            this@IpSelectionActivity.finish()
+                            this.cancel()
+                        }
+                    }
+                }
+            }
+        }, 0, 1000)
     }
 
     private fun busquedaIps(servicioVaimpIp: vaimpService, refresh: SwipeRefreshLayout, app: App){

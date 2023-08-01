@@ -1,5 +1,6 @@
 package com.sirdella.vaimpremote
 
+import android.content.Context
 import android.util.Log
 import com.squareup.kotlinpoet.AnnotationSpec
 import kotlinx.coroutines.Dispatchers
@@ -7,9 +8,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.coroutines.coroutineContext
 
 class vaimpService {
 
@@ -120,6 +123,24 @@ class vaimpService {
             try {
                 //var url = URL("http://" + ip + "/isVAIMP"
                 respuesta = requestGET("http://" + ip + "/StopMusic")
+            } catch (e: Exception) {
+                Log.d("cosas", ip + " " + e.toString())
+                callbackRespuesta(false)
+            }
+            if (respuesta.contains("OK")) {
+                Log.d("cosas", respuesta + ": " + ip)
+                callbackRespuesta(true)
+            }
+        }
+    }
+
+    fun SetMusicPos(ip: String, sec: Float, callbackRespuesta: (Boolean) -> Unit)
+    {
+        GlobalScope.launch (Dispatchers.IO){
+            var respuesta = ""
+            try {
+                //var url = URL("http://" + ip + "/isVAIMP"
+                respuesta = requestGET("http://" + ip + "/SetMusicPos=$sec")
             } catch (e: Exception) {
                 Log.d("cosas", ip + " " + e.toString())
                 callbackRespuesta(false)

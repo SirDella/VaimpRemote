@@ -1,6 +1,7 @@
 package com.sirdella.vaimpremote
 
 import android.animation.ValueAnimator
+import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -39,10 +40,41 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var receiver: broadcastReceiver
     lateinit var mediaPlayer: MediaPlayer
+    lateinit var app: App
+
+    fun guardarLogFatu(mensaje: String, borrar: Boolean = false)
+    {
+        val path = this.getExternalFilesDir(null)
+        val file = File(path, "Log.txt")
+
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        val hour = c.get(Calendar.HOUR_OF_DAY)
+        val minute = c.get(Calendar.MINUTE)
+        val second = c.get(Calendar.SECOND)
+        val millisecond = c.get(Calendar.MILLISECOND)
+
+
+        if (!borrar) file.appendText("[$year-$month-$day $hour:$minute:$second,$millisecond] " + mensaje + "\n")
+        else file.delete()
+    }
+
+    override fun onDestroy() {
+        Timer().cancel()
+        Log.d("cosas", "Ondestroy")
+        mediaPlayer.release()
+        guardarLogFatu("", true)
+        super.onDestroy()
+    }
 
     override fun onBackPressed() {
         val etBusqueda = findViewById<EditText>(R.id.etBusqueda)
         etBusqueda.visibility = View.GONE
+
+        if (etBusqueda.text.toString() != "") rvLista.scheduleLayoutAnimation()
+        adapterRecycler.actualizarLista(app!!.repoVaimp!!.listaCanciones)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,15 +83,16 @@ class MainActivity : AppCompatActivity() {
         Log.d("cosas", "inicio mainActivity")
 
         val servicioVaimp = vaimpService()
-        val app = (application as App)
-
+        app = (application as App)
         var playbackState = PlaybackStateDC()
 
         //Recycler:
         rvLista = findViewById<RecyclerView>(R.id.recyclerCanciones)
         adapterRecycler = CancionAdapter(this, callbackClick = {
             ocultarTeclado()
+            val cancion = it
             app.repoVaimp!!.servicioVaimp.SelectSong(app.repoVaimp!!.mainIp!!, it.index){
+                guardarLogFatu("Poner ${cancion.Name}")
             }
         })
         rvLista.adapter = adapterRecycler
@@ -84,21 +117,21 @@ class MainActivity : AppCompatActivity() {
         val bPlay = findViewById<CardView>(R.id.cardViewPlay)
         bPlay.setOnClickListener {
             servicioVaimp.PlayPause(app.repoVaimp!!.mainIp!!){
-
+                guardarLogFatu("Play/pausa")
             }
         }
 
         val bNext = findViewById<CardView>(R.id.imageViewNext)
         bNext.setOnClickListener {
             servicioVaimp.NextSong(app.repoVaimp!!.mainIp!!){
-
+                guardarLogFatu("Siguiente")
             }
         }
 
         val bPrev = findViewById<CardView>(R.id.imageViewPrev)
         bPrev.setOnClickListener {
             servicioVaimp.PreviousSong(app.repoVaimp!!.mainIp!!){
-
+                guardarLogFatu("Previa (sin alcohol)")
             }
         }
 
@@ -108,6 +141,7 @@ class MainActivity : AppCompatActivity() {
                 if (fromUser)
                 {
                     servicioVaimp.SetMusicPos(app.repoVaimp!!.mainIp!!, (progress*playbackState.SongLength)/timeSeekbar.max, callbackRespuesta = {
+                        guardarLogFatu("Seek")
                     })
                 }
             }
@@ -145,6 +179,9 @@ class MainActivity : AppCompatActivity() {
                 etBusqueda.requestFocus()
                 val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(etBusqueda, InputMethodManager.SHOW_IMPLICIT)
+
+                if (etBusqueda.text.toString() != "") rvLista.scheduleLayoutAnimation()
+                adapterRecycler.actualizarLista(filtrar(etBusqueda.text.toString(), app!!.repoVaimp!!.listaCanciones))
             }
         })
 
@@ -217,6 +254,7 @@ class MainActivity : AppCompatActivity() {
                         GlobalScope.launch {
                             var audioUrl = "http://sirdella.ddns.net:5045/dou"
                             try {
+
                                 val file = File(
                                     applicationContext.getExternalFilesDir(null),
                                     "song.mp3"
@@ -226,6 +264,7 @@ class MainActivity : AppCompatActivity() {
                                 //file.appendBytes(URL("http://" + app.repoVaimp!!.mainIp + "/dou").readBytes())
 
                                 val cancionDescargando = playbackState.Songname
+                                guardarLogFatu("Descargando $cancionDescargando")
 
                                 val obj = URL("http://" + app.repoVaimp!!.mainIp + "/dou")
                                 val con = obj.openConnection() as HttpURLConnection
@@ -242,6 +281,11 @@ class MainActivity : AppCompatActivity() {
                                 var bytesRead: Int
                                 while (inputStream.read(buffer).also { bytesRead = it } != -1 && playbackState.Songname == cancionDescargando) {
                                     outputStream.write(buffer, 0, bytesRead)
+                                }
+
+                                if (playbackState.Songname != cancionDescargando)
+                                {
+                                    guardarLogFatu("Abortada la descarga de $cancionDescargando")
                                 }
 
                                 outputStream.close()
@@ -269,10 +313,13 @@ class MainActivity : AppCompatActivity() {
                                 downloading = false
                                 cooldown=1
                                 currentSong = cancionDescargando
+
+                                guardarLogFatu("Descarga completada de $currentSong")
                             }
                             catch (e: Exception) {
                                 Log.d("latency", e.toString())
                                 downloading = false
+                                guardarLogFatu("Excepción: ${ e.toString()}")
                             }
                         }
                     }
@@ -295,7 +342,7 @@ class MainActivity : AppCompatActivity() {
                         mediaPlayer.pause()
                     }
 
-                    if (playbackState.IsPlaying && !mediaPlayer.isPlaying)
+                    if (playbackState.IsPlaying && !mediaPlayer.isPlaying && currentSong == playbackState.Songname)
                     {
                         runOnUiThread { Glide.with(applicationContext).load(R.drawable.pausebtnom).transition(DrawableTransitionOptions.withCrossFade()).centerCrop().into(ivPlayPausa) }
                         mediaPlayer.start()
@@ -328,7 +375,9 @@ class MainActivity : AppCompatActivity() {
 
                 if (cooldown <= 0)
                 {
+
                     val seekTo = (playbackState.SongPos * 1000).toInt() + callDelayAvg + seekDelay
+                    guardarLogFatu("reSync a $seekTo")
                     Log.d("latency", "seekTo: $seekTo")
                     mediaPlayer.seekTo(seekTo)
                     cooldown = 2

@@ -2,10 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintPrincipal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fondoOscuro"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/cardTop"
@@ -14,38 +15,87 @@
         android:background="@drawable/gradient"
         app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="10sp"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:background="@drawable/gradient"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient">
 
             <ImageView
                 android:id="@+id/imageView"
-                app:layout_constraintHorizontal_chainStyle="packed"
                 android:layout_width="@dimen/cardTitleHeight"
-                android:padding="10sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/textView"
                 android:layout_height="@dimen/cardTitleHeight"
+                android:padding="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/textView"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/icon" />
 
             <TextView
                 android:id="@+id/textView"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/vaimp_size"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="VAIMP Remote" />
+                android:fontFamily="sans-serif"
+                android:text="VAIMP Remote"
+                android:textColor="@color/white"
+                android:textSize="@dimen/vaimp_size"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toRightOf="@id/imageView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="52dp"
+                android:layout_height="65dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/black"
+                android:indeterminateTintMode="src_atop"
+                android:visibility="invisible"
+                app:circularflow_radiusInDP="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/imageView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView"
+                tools:visibility="visible" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvBusqueda"
+                android:layout_width="65dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/transparent"
+                android:clickable="true"
+                android:elevation="0dp"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="31dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:layout_editor_absoluteY="10dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -53,81 +103,80 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/cardBottom"
-        app:contentInsetStart="0dp"
         android:layout_width="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_height="@dimen/bottom_card_size">
+        android:layout_height="@dimen/bottom_card_size"
+        app:contentInsetStart="0dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contraintBottom"
             android:layout_width="match_parent"
-            android:background="@drawable/gradient_bottom"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_bottom">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/imageViewPlay"
-                android:backgroundTint="@color/transparent"
+                android:id="@+id/cardViewPlay"
                 android:layout_width="@dimen/play_btn_radius"
                 android:layout_height="@dimen/play_btn_radius"
-                app:cardCornerRadius="37.5sp"
+                android:backgroundTint="@color/transparent"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="37.5sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    app:srcCompat="@drawable/playicon"
+                    android:id="@+id/ivPlayPausa"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                </ImageView>
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/playicon"></ImageView>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:focusable="true"
-                android:clickable="true"
-                app:cardCornerRadius="31sp"
-                android:backgroundTint="@color/transparent"
                 android:id="@+id/imageViewPrev"
                 android:layout_width="62sp"
                 android:layout_height="62sp"
                 android:layout_marginEnd="10sp"
+                android:backgroundTint="@color/transparent"
+                android:clickable="true"
+                android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:layout_constraintBottom_toBottomOf="@+id/imageViewPlay"
-                app:layout_constraintEnd_toStartOf="@+id/imageViewPlay"
-                app:layout_constraintTop_toTopOf="@+id/imageViewPlay"
-                 >
+                app:cardCornerRadius="31sp"
+                app:layout_constraintBottom_toBottomOf="@+id/cardViewPlay"
+                app:layout_constraintEnd_toStartOf="@+id/cardViewPlay"
+                app:layout_constraintTop_toTopOf="@+id/cardViewPlay">
 
                 <ImageView
-                    app:srcCompat="@drawable/previousbtnom"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/previousbtnom">
 
                 </ImageView>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:backgroundTint="@color/transparent"
-                app:cardCornerRadius="31sp"
-                android:focusable="true"
-                android:clickable="true"
                 android:id="@+id/imageViewNext"
                 android:layout_width="62sp"
                 android:layout_height="62sp"
                 android:layout_marginStart="10sp"
+                android:backgroundTint="@color/transparent"
+                android:clickable="true"
+                android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:layout_constraintBottom_toBottomOf="@+id/imageViewPlay"
-                app:layout_constraintStart_toEndOf="@id/imageViewPlay"
-                app:layout_constraintTop_toTopOf="@+id/imageViewPlay"
-                >
+                app:cardCornerRadius="31sp"
+                app:layout_constraintBottom_toBottomOf="@+id/cardViewPlay"
+                app:layout_constraintStart_toEndOf="@id/cardViewPlay"
+                app:layout_constraintTop_toTopOf="@+id/cardViewPlay">
 
                 <ImageView
-                    app:srcCompat="@drawable/nextbtnom"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/nextbtnom">
 
 
                 </ImageView>
@@ -138,18 +187,71 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:id="@+id/recyclerCanciones"
         android:layout_width="match_parent"
-        android:layoutAnimation="@anim/layout_animation"
         android:layout_height="0dp"
-        tools:listitem="@layout/item_cancion"
-        app:layout_constraintTop_toBottomOf="@id/cardTop"
-        app:layout_constraintBottom_toTopOf="@id/cardBottom"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layoutAnimation="@anim/layout_animation"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/contraintSeekbar"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="66dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etBusqueda"
+        tools:listitem="@layout/item_cancion" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contraintSeekbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/gradient_seekbar"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintBottom_toTopOf="@id/cardBottom">
+
+        <SeekBar
+            android:id="@+id/timeseekBar"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginHorizontal="24dp"
+            android:max="1000"
+            android:progressTint="@color/vaimpGreen"
+            android:thumbTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvCurrentSong"
+            tools:progress="500" />
+
+        <TextView
+            android:id="@+id/tvCurrentSong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:maxLines="1"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/timeseekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="VAI - Dou (ft. Helena)" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/etBusqueda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:backgroundTint="@color/vaimpGreen"
+        android:ems="10"
+        android:hint="@string/string_buscar"
+        android:inputType="textPersonName"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardTop"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

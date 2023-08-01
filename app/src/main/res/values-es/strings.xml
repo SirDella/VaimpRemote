@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="string_error">Error de conexión, reintentando...</string>
+    <string name="string_buscar">Buscar</string>
+</resources>

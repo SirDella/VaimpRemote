@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="cardTitleHeight">65sp</dimen>
+    <dimen name="cardTitleHeight">65dp</dimen>
     <dimen name="vaimp_size">25sp</dimen>
     <dimen name="bottom_card_size">100sp</dimen>
     <dimen name="marginLogo">10sp</dimen>
