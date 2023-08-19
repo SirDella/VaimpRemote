@@ -50,11 +50,12 @@
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="52dp"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="51dp"
+                app:circularflow_defaultRadius="10dp"
                 android:layout_height="65dp"
                 android:indeterminate="true"
-                android:indeterminateTint="@color/black"
+                android:indeterminateTint="#161616"
                 android:indeterminateTintMode="src_atop"
                 android:visibility="invisible"
                 app:circularflow_radiusInDP="1dp"

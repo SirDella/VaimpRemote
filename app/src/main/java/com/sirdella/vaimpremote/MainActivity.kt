@@ -136,12 +136,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         val timeSeekbar = findViewById<SeekBar>(R.id.timeseekBar)
+        var dontMoveSeekbar = false
         timeSeekbar.setOnSeekBarChangeListener(object: OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser)
                 {
+                    dontMoveSeekbar = true
                     servicioVaimp.SetMusicPos(app.repoVaimp!!.mainIp!!, (progress*playbackState.SongLength)/timeSeekbar.max, callbackRespuesta = {
-                        guardarLogFatu("Seek")
+                        guardarLogFatu("Seek a ${(progress*playbackState.SongLength)/timeSeekbar.max}")
                     })
                 }
             }
@@ -226,8 +228,8 @@ class MainActivity : AppCompatActivity() {
             @RequiresApi(Build.VERSION_CODES.N)
             override fun run()
             {
-                try {
-                    callDelay = measureTimeMillis {
+                try {callDelay = measureTimeMillis {
+
                         app.repoVaimp!!.servicioVaimpJson.GetPlaybackState(app.repoVaimp!!.mainIp!!, callbackResultado = {
                             runOnUiThread {  tvCurrentSong.text = getString(R.string.string_error)}
                             playbackState = it
@@ -237,7 +239,7 @@ class MainActivity : AppCompatActivity() {
                     //de acá para abajo no se ejecuta si no hay conexión por algun motivo mistico
 
                     runOnUiThread{
-                        animarSeekbar(timeSeekbar.progress, ((playbackState.SongPos/playbackState.SongLength)*timeSeekbar.max).toInt(), 1000, timeSeekbar)
+                        if (!dontMoveSeekbar) animarSeekbar(timeSeekbar.progress, ((playbackState.SongPos/playbackState.SongLength)*timeSeekbar.max).toInt(), 1000, timeSeekbar)
                         tvCurrentSong.text = playbackState.Songname
 
                         if (downloading)
@@ -369,13 +371,13 @@ class MainActivity : AppCompatActivity() {
                 {
                     Log.e("cosas", e.toString())
                 }
+
+                dontMoveSeekbar = false
             }
 
             private fun reSync(playbackState: PlaybackStateDC) {
-
                 if (cooldown <= 0)
                 {
-
                     val seekTo = (playbackState.SongPos * 1000).toInt() + callDelayAvg + seekDelay
                     guardarLogFatu("reSync a $seekTo")
                     Log.d("latency", "seekTo: $seekTo")
