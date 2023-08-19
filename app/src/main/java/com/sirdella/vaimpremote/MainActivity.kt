@@ -254,7 +254,6 @@ class MainActivity : AppCompatActivity() {
                         Log.d("latency", "Inicio descarga ${playbackState.Songname}")
 
                         GlobalScope.launch {
-                            var audioUrl = "http://sirdella.ddns.net:5045/dou"
                             try {
 
                                 val file = File(
@@ -262,8 +261,6 @@ class MainActivity : AppCompatActivity() {
                                     "song.mp3"
                                 )
                                 if (file.exists()) file.delete()
-
-                                //file.appendBytes(URL("http://" + app.repoVaimp!!.mainIp + "/dou").readBytes())
 
                                 val cancionDescargando = playbackState.Songname
                                 guardarLogFatu("Descargando $cancionDescargando")
