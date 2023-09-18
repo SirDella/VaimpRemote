@@ -3,6 +3,7 @@ package com.sirdella.vaimpremote
 data class PlaybackStateDC(
     var IsPlaying: Boolean = false,
     var Songname: String = "",
+    var ImgUrl: String = "",
     var SongLength: Float = 0f,
     var SongPos: Float = 0f,
     var Volume: Float = 0f,

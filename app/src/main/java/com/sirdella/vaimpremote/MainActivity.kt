@@ -231,7 +231,10 @@ class MainActivity : AppCompatActivity() {
                 try {callDelay = measureTimeMillis {
 
                         app.repoVaimp!!.servicioVaimpJson.GetPlaybackState(app.repoVaimp!!.mainIp!!, callbackResultado = {
-                            runOnUiThread {  tvCurrentSong.text = getString(R.string.string_error)}
+                            if (it.Songname == "") //esto es una negrada
+                            {
+                                runOnUiThread {  tvCurrentSong.text = getString(R.string.string_error)}
+                            }
                             playbackState = it
                         })
                     }.toInt()
@@ -255,6 +258,10 @@ class MainActivity : AppCompatActivity() {
 
                         GlobalScope.launch {
                             try {
+                                var audioUrl = "http://" + app.repoVaimp!!.mainIp + "/Stream"
+
+                                val cancionDescargando = playbackState.Songname
+                                guardarLogFatu("Descargando $cancionDescargando")
 
                                 val file = File(
                                     applicationContext.getExternalFilesDir(null),
@@ -262,10 +269,7 @@ class MainActivity : AppCompatActivity() {
                                 )
                                 if (file.exists()) file.delete()
 
-                                val cancionDescargando = playbackState.Songname
-                                guardarLogFatu("Descargando $cancionDescargando")
-
-                                val obj = URL("http://" + app.repoVaimp!!.mainIp + "/dou")
+                                val obj = URL(audioUrl)
                                 val con = obj.openConnection() as HttpURLConnection
                                 val outputStream = FileOutputStream(file)
 
@@ -291,8 +295,10 @@ class MainActivity : AppCompatActivity() {
                                 inputStream.close()
 
 
+
                                 mediaPlayer.reset()
                                 mediaPlayer.setDataSource(file.absolutePath)
+                                //mediaPlayer.setDataSource("http://sirdella.ddns.net:2050/D%3A/Users/Lucad/Documents/The%20Great%20Unification/Backups/Moto%20G82/Almacenamiento/AUDIO/M%C3%BAsica%20Cirueliana/Mittsies%20-%20Voidreckon%20(Full%20Album).m4a")
                                 mediaPlayer.prepare()
 
                                 val callDelay2 = measureTimeMillis {
@@ -316,7 +322,7 @@ class MainActivity : AppCompatActivity() {
                                 guardarLogFatu("Descarga completada de $currentSong")
                             }
                             catch (e: Exception) {
-                                Log.d("latency", e.toString())
+                                Log.d("mediaplayer", e.toString())
                                 downloading = false
                                 guardarLogFatu("Excepción: ${ e.toString()}")
                             }

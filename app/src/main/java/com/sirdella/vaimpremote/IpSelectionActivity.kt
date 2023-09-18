@@ -65,17 +65,7 @@ class IpSelectionActivity : AppCompatActivity() {
 
         var timer = Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                if (app.repoVaimp != null && app.repoVaimp!!.mainIp != null)
-                {
-                    servicioVaimpIp.isVAIMP(app.repoVaimp!!.mainIp!!){
-                        if (it)
-                        {
-                            app.repoVaimp!!.actualizarIp()
-                            this@IpSelectionActivity.finish()
-                            this.cancel()
-                        }
-                    }
-                }
+
             }
         }, 0, 1000)
     }
