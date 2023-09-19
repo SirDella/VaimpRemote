@@ -29,6 +29,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,13 +47,15 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <!--mediaSession-->
         <service
-            android:name="MediaSession"
+            android:name="VaimpMediaService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService"/>
             </intent-filter>
         </service>
+
     </application>
 </manifest>

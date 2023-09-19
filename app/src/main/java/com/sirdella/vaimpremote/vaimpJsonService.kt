@@ -68,28 +68,29 @@ class vaimpJsonService()
             callbackResultado(cancion)
         }
     }
-}
 
-fun requestGET(url: String, timeout: Int = 2000): String {
-    val obj = URL(url)
-    val con = obj.openConnection() as HttpURLConnection
-    con.requestMethod = "GET"
-    con.connectTimeout=timeout
-    con.readTimeout=timeout
-    val responseCode = con.responseCode
-    println("Response Code :: $responseCode")
-    return if (responseCode == HttpURLConnection.HTTP_OK) { // connection ok
-        val `in` =
-            BufferedReader(InputStreamReader(con.inputStream))
-        var inputLine: String?
-        val response = StringBuffer()
-        while (`in`.readLine().also { inputLine = it } != null) {
-            response.append(inputLine)
+
+    fun requestGET(url: String, timeout: Int = 2000): String {
+        val obj = URL(url)
+        val con = obj.openConnection() as HttpURLConnection
+        con.requestMethod = "GET"
+        con.connectTimeout=timeout
+        con.readTimeout=timeout
+        val responseCode = con.responseCode
+        println("Response Code :: $responseCode")
+        return if (responseCode == HttpURLConnection.HTTP_OK) { // connection ok
+            val `in` =
+                BufferedReader(InputStreamReader(con.inputStream))
+            var inputLine: String?
+            val response = StringBuffer()
+            while (`in`.readLine().also { inputLine = it } != null) {
+                response.append(inputLine)
+            }
+            `in`.close()
+            response.toString()
+        } else {
+            Log.d("cosas", "Error en el codigo de respuesta HTTP: $responseCode")
+            throw Exception("Error en el codigo de respuesta HTTP: $responseCode")
         }
-        `in`.close()
-        response.toString()
-    } else {
-        Log.d("cosas", "Error en el codigo de respuesta HTTP: $responseCode")
-        throw Exception("Error en el codigo de respuesta HTTP: $responseCode")
     }
 }

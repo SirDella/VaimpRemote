@@ -1,21 +1,21 @@
 package com.sirdella.vaimpremote
 
 import android.animation.ValueAnimator
-import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -33,6 +33,7 @@ import java.lang.Math.abs
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import kotlin.math.roundToInt
 import kotlin.system.measureTimeMillis
 
 
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var receiver: broadcastReceiver
     lateinit var mediaPlayer: MediaPlayer
     lateinit var app: App
+    var onCreated = false
 
     fun guardarLogFatu(mensaje: String, borrar: Boolean = false)
     {
@@ -70,6 +72,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        esconderBuscador()
+    }
+
+    private fun esconderBuscador() {
         val etBusqueda = findViewById<EditText>(R.id.etBusqueda)
         etBusqueda.visibility = View.GONE
 
@@ -82,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.d("cosas", "inicio mainActivity")
 
-        val servicioVaimp = vaimpService()
+        val servicioVaimp = vaimpCallsService()
         app = (application as App)
         var playbackState = PlaybackStateDC()
 
@@ -187,6 +193,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        val tvDescarga = findViewById<TextView>(R.id.tvDescarga)
 
         /*
         GlobalScope.launch{
@@ -223,6 +230,13 @@ class MainActivity : AppCompatActivity() {
         var resync = false
         var currentPositionLast = 0
         var songPosLast = 0
+
+        /*
+        var service = VaimpMediaService()
+        val intent = Intent(this, VaimpMediaService::class.java)
+        startForegroundService(intent)
+
+         */
 
         var timer = Timer().scheduleAtFixedRate(object : TimerTask() {
             @RequiresApi(Build.VERSION_CODES.N)
@@ -274,24 +288,33 @@ class MainActivity : AppCompatActivity() {
                                 val outputStream = FileOutputStream(file)
 
                                 con.requestMethod = "GET"
-                                con.connectTimeout=2000
-                                con.readTimeout=2000
+                                con.connectTimeout=10000
+                                con.readTimeout=10000
 
                                 val inputStream = con.inputStream
-
+                                var contador=0.00
                                 val buffer = ByteArray(4096)
 
                                 var bytesRead: Int
                                 while (inputStream.read(buffer).also { bytesRead = it } != -1 && playbackState.Songname == cancionDescargando) {
                                     outputStream.write(buffer, 0, bytesRead)
+                                    contador += bytesRead
+                                    runOnUiThread {
+                                        tvDescarga.text = "(${(((contador/1000/1000))*10.0).roundToInt()/10.0} MB)"
+                                    }
                                 }
 
                                 outputStream.close()
                                 inputStream.close()
 
+                                runOnUiThread {
+                                    tvDescarga.text = ""
+                                }
+
                                 if (playbackState.Songname != cancionDescargando)
                                 {
                                     guardarLogFatu("Abortada la descarga de $cancionDescargando")
+                                    Log.d("latency", "Abortada la descarga de $cancionDescargando")
                                 }
                                 else
                                 {
@@ -314,15 +337,19 @@ class MainActivity : AppCompatActivity() {
                                     mediaPlayer.start()
 
                                     resync = true
-                                    downloading = false
+
                                     cooldown=1
                                     currentSong = cancionDescargando
 
                                     guardarLogFatu("Descarga completada de $currentSong")
                                 }
+                                downloading = false
                             }
                             catch (e: Exception) {
                                 Log.d("mediaplayer", e.toString())
+                                runOnUiThread {
+                                    Toast.makeText(this@MainActivity, e.toString(), Toast.LENGTH_LONG).show()
+                                }
                                 downloading = false
                                 guardarLogFatu("Excepción: ${ e.toString()}")
                             }

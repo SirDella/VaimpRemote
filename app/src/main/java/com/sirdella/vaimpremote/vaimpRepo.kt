@@ -13,17 +13,17 @@ class vaimpRepo(private val contexto: Context) {
     var cancionActual = PlaybackStateDC()
 
     var mainIp: String? = null
-    var ips = ArrayList<ipListDC>()
+    var ips = ArrayList<IpListDC>()
 
     lateinit var servicioVaimpJson: vaimpJsonService
     var jsonServiceIniciado = false
-    var servicioVaimp: vaimpService
+    var servicioVaimp: vaimpCallsService
 
     init {
         Log.d("Cosas", "inicio init vaimpRepo")
 
         cargarConfig()
-        servicioVaimp = vaimpService()
+        servicioVaimp = vaimpCallsService()
         actualizarIp()
 
         Log.d("Cosas", "fin init vaimpRepo")
@@ -86,7 +86,7 @@ class vaimpRepo(private val contexto: Context) {
                 val linesplit = line.split("=")
                 when(linesplit[0]){
                     "mainIp" -> mainIp = linesplit[1]
-                    "ip" -> ips.add(ipListDC(linesplit[1]))
+                    "ip" -> ips.add(IpListDC(linesplit[1]))
                 }
             }
         }

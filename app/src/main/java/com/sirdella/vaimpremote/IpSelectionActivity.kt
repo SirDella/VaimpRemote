@@ -1,6 +1,5 @@
 package com.sirdella.vaimpremote
 
-import android.app.Activity
 import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +24,7 @@ import kotlin.collections.ArrayList
 
 class IpSelectionActivity : AppCompatActivity() {
     lateinit var localIp: String
-    var listaIps = ArrayList<ipListDC>()
+    var listaIps = ArrayList<IpListDC>()
     var cantIpsCheckeadas = 0
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -34,7 +33,7 @@ class IpSelectionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ip_selection)
         Log.d("cosas", "inicio ipSelAct")
 
-        val servicioVaimpIp = vaimpService()
+        val servicioVaimpIp = vaimpCallsService()
         val app = (application as App)
 
         //Recycler:
@@ -70,7 +69,7 @@ class IpSelectionActivity : AppCompatActivity() {
         }, 0, 1000)
     }
 
-    private fun busquedaIps(servicioVaimpIp: vaimpService, refresh: SwipeRefreshLayout, app: App){
+    private fun busquedaIps(servicioVaimpIp: vaimpCallsService, refresh: SwipeRefreshLayout, app: App){
         listaIps = ArrayList()
         adapterRecycler.actualizarLista(listaIps)
         for(i in app.repoVaimp!!.ips)
@@ -104,7 +103,7 @@ class IpSelectionActivity : AppCompatActivity() {
     }
 
     private fun llamarIp(
-        servicioVaimpIp: vaimpService,
+        servicioVaimpIp: vaimpCallsService,
         ipWithoutLast: String,
         i: Int,
         refresh: SwipeRefreshLayout
@@ -113,7 +112,7 @@ class IpSelectionActivity : AppCompatActivity() {
             Log.d("ips", i.toString())
             servicioVaimpIp.isVAIMPnoAsync(ipWithoutLast + i + ":5045", {
                 if (it) {
-                    val ip = ipListDC(ipWithoutLast + i + ":5045", true)
+                    val ip = IpListDC(ipWithoutLast + i + ":5045", true)
                     listaIps.add(ip)
                     runOnUiThread { adapterRecycler.actualizarLista(listaIps) }
                 }
@@ -136,11 +135,11 @@ class IpSelectionActivity : AppCompatActivity() {
     lateinit var adapterRecycler: ipAdapter
     lateinit var rvLista: RecyclerView
 
-    class ipAdapter(private val contexto: Context, private val callbackClick: (ipListDC) -> Unit) : RecyclerView.Adapter<ipVH>() {
+    class ipAdapter(private val contexto: Context, private val callbackClick: (IpListDC) -> Unit) : RecyclerView.Adapter<ipVH>() {
 
-        var ips = listOf<ipListDC>()
+        var ips = listOf<IpListDC>()
 
-        fun actualizarLista(nuevaLista: List<ipListDC>){
+        fun actualizarLista(nuevaLista: List<IpListDC>){
             ips = nuevaLista
             notifyDataSetChanged()
         }

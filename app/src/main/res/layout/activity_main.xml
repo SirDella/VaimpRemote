@@ -14,7 +14,7 @@
         android:layout_height="@dimen/cardTitleHeight"
         android:background="@drawable/gradient"
         app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="10sp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +41,7 @@
                 android:fontFamily="sans-serif"
                 android:text="VAIMP Remote"
                 android:textColor="@color/white"
-                android:textSize="@dimen/vaimp_size"
+                android:textSize="22dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_chainStyle="packed"
@@ -52,12 +52,12 @@
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleSmall"
                 android:layout_width="51dp"
-                app:circularflow_defaultRadius="10dp"
                 android:layout_height="65dp"
                 android:indeterminate="true"
                 android:indeterminateTint="#161616"
                 android:indeterminateTintMode="src_atop"
                 android:visibility="invisible"
+                app:circularflow_defaultRadius="10dp"
                 app:circularflow_radiusInDP="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/imageView"
@@ -67,17 +67,18 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvBusqueda"
-                android:layout_width="65dp"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="16dp"
                 android:backgroundTint="@color/transparent"
                 android:clickable="true"
                 android:elevation="0dp"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardCornerRadius="31dp"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:layout_editor_absoluteY="10dp">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -95,6 +96,18 @@
 
 
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tvDescarga"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif"
+                android:text=""
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cvBusqueda"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="(1000 MB)" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
