@@ -286,40 +286,40 @@ class MainActivity : AppCompatActivity() {
                                     outputStream.write(buffer, 0, bytesRead)
                                 }
 
+                                outputStream.close()
+                                inputStream.close()
+
                                 if (playbackState.Songname != cancionDescargando)
                                 {
                                     guardarLogFatu("Abortada la descarga de $cancionDescargando")
                                 }
-
-                                outputStream.close()
-                                inputStream.close()
-
-
-
-                                mediaPlayer.reset()
-                                mediaPlayer.setDataSource(file.absolutePath)
-                                //mediaPlayer.setDataSource("http://sirdella.ddns.net:2050/D%3A/Users/Lucad/Documents/The%20Great%20Unification/Backups/Moto%20G82/Almacenamiento/AUDIO/M%C3%BAsica%20Cirueliana/Mittsies%20-%20Voidreckon%20(Full%20Album).m4a")
-                                mediaPlayer.prepare()
-
-                                val callDelay2 = measureTimeMillis {
-                                    app.repoVaimp!!.servicioVaimpJson.GetPlaybackState(app.repoVaimp!!.mainIp!!, callbackResultado = {
-                                        playbackState = it
-                                    })
-                                }.toInt()
-
-                                if (callDelayAvg<=0)
+                                else
                                 {
-                                    callDelayAvg = callDelay2
+                                    mediaPlayer.reset()
+                                    mediaPlayer.setDataSource(file.absolutePath)
+                                    //mediaPlayer.setDataSource("http://sirdella.ddns.net:2050/D%3A/Users/Lucad/Documents/The%20Great%20Unification/Backups/Moto%20G82/Almacenamiento/AUDIO/M%C3%BAsica%20Cirueliana/Mittsies%20-%20Voidreckon%20(Full%20Album).m4a")
+                                    mediaPlayer.prepare()
+
+                                    val callDelay2 = measureTimeMillis {
+                                        app.repoVaimp!!.servicioVaimpJson.GetPlaybackState(app.repoVaimp!!.mainIp!!, callbackResultado = {
+                                            playbackState = it
+                                        })
+                                    }.toInt()
+
+                                    if (callDelayAvg<=0)
+                                    {
+                                        callDelayAvg = callDelay2
+                                    }
+
+                                    mediaPlayer.start()
+
+                                    resync = true
+                                    downloading = false
+                                    cooldown=1
+                                    currentSong = cancionDescargando
+
+                                    guardarLogFatu("Descarga completada de $currentSong")
                                 }
-
-                                mediaPlayer.start()
-
-                                resync = true
-                                downloading = false
-                                cooldown=1
-                                currentSong = cancionDescargando
-
-                                guardarLogFatu("Descarga completada de $currentSong")
                             }
                             catch (e: Exception) {
                                 Log.d("mediaplayer", e.toString())
