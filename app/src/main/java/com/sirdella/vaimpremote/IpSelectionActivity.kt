@@ -4,10 +4,13 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
@@ -61,6 +64,26 @@ class IpSelectionActivity : AppCompatActivity() {
 
         busquedaIps(servicioVaimpIp, refreshLayout, app)
         app.repoVaimp!!.iniciarJsonService()
+
+        val etIp = findViewById<EditText>(R.id.etIp)
+        etIp.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                servicioVaimpIp.isVAIMP(p0.toString()){
+                    if (it)
+                    {
+                        app.repoVaimp!!.mainIp = p0.toString()
+                        app.repoVaimp!!.actualizarIp()
+                        this@IpSelectionActivity.finish()
+                    }
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
 
         var timer = Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {

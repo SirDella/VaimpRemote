@@ -2,4 +2,5 @@
     <string name="app_name" translatable="false">VAIMP Remote</string>
     <string name="string_error">Connection error, retrying...</string>
     <string name="string_buscar">Search</string>
+    <string name="ip_port">Type in address (ip:port)</string>
 </resources>
