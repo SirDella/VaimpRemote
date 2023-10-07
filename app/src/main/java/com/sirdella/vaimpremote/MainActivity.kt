@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.media.MediaPlayer
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -22,6 +24,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -34,6 +37,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 import kotlin.math.roundToInt
+import kotlin.reflect.jvm.internal.impl.serialization.deserialization.FlexibleTypeDeserializer.ThrowException
 import kotlin.system.measureTimeMillis
 
 
@@ -195,30 +199,39 @@ class MainActivity : AppCompatActivity() {
 
         val tvDescarga = findViewById<TextView>(R.id.tvDescarga)
 
-        /*
+
         GlobalScope.launch{
-            val file = File(applicationContext.getExternalFilesDir(null), "app.apk")
-            if (file.exists()) file.delete()
-            file.appendBytes(URL("https://github.com/SirDella/VaimpRemote/raw/master/app/build/outputs/apk/debug/app-debug.apk").readBytes())
+            try {
+                val connectivityManager =
+                    this@MainActivity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                if (networkCapabilities != null && !networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) && (vaimpUpdater().build < URL("http://sirdella.ddns.net:2050/VaimpRemote/app/src/main/res/raw/buildnumber").readText().toInt()))
+                {
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, getString(R.string.update_available), Toast.LENGTH_SHORT).show()
+                    }
 
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", file)
-            intent.setDataAndType(uri, "application/vnd.android.package-archive")
-            applicationContext.startActivity(intent);
+                    val file = File(applicationContext.getExternalFilesDir(null), "app.apk")
+                    if (file.exists()) file.delete()
+                    file.appendBytes(URL("http://sirdella.ddns.net:2050/VaimpRemote/app/build/outputs/apk/debug/app-debug.apk").readBytes())
+
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    val uri = FileProvider.getUriForFile(
+                        applicationContext,
+                        applicationContext.packageName + ".provider",
+                        file
+                    )
+                    intent.setDataAndType(uri, "application/vnd.android.package-archive")
+                    applicationContext.startActivity(intent);
+                }
+            }
+            catch(_: Exception){}
         }
-         */
-        /*
-        GlobalScope.launch{
-            val file = File(applicationContext.getExternalFilesDir(null), "song.m4a")
-            if (file.exists()) file.delete()
-            file.appendBytes(URL("http://192.168.1.37:5045/dou").readBytes())
 
-        }
 
-         */
 
         mediaPlayer = MediaPlayer()
         var currentSong = ""

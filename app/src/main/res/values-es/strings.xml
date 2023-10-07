@@ -3,4 +3,5 @@
     <string name="string_error">Error de conexión, reintentando...</string>
     <string name="string_buscar">Buscar</string>
     <string name="ip_port">Ingrese una ip (ip:puerto)</string>
+    <string name="update_available">Actualizacion disponible!</string>
 </resources>

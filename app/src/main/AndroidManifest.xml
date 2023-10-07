@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sirdella.vaimpremote">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -10,6 +11,7 @@
     <!--mediaSession-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
 
 
     <application
@@ -24,6 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VaimpRemote"
         tools:targetApi="31">
+
+        <profileable android:shell="true" />
+
         <activity
             android:name=".IpSelectionActivity"
             android:exported="false" />
