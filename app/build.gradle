@@ -6,6 +6,14 @@ plugins {
 
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('D:\\TGU\\Programacion\\Android\\Keystore\\keystore1.jks')
+            storePassword 'Androidxd4373!'
+            keyAlias 'key0'
+            keyPassword 'Androidxd4373!'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
@@ -22,6 +30,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix '.debug'
         }
     }
     compileOptions {
@@ -52,4 +63,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
 }

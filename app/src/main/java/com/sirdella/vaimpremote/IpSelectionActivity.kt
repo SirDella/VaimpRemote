@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,23 +29,25 @@ class IpSelectionActivity : AppCompatActivity() {
     var listaIps = ArrayList<IpListDC>()
     var cantIpsCheckeadas = 0
 
+    val logger = Logger(this)
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ip_selection)
-        Log.d("cosas", "inicio ipSelAct")
+        logger.log("Inicio IpSelectionActivity", "Flowlog")
 
-        val servicioVaimpIp = vaimpCallsService()
+        val servicioVaimpIp = VaimpCalls()
         val app = (application as App)
 
         //Recycler:
         rvLista = findViewById<RecyclerView>(R.id.recyclerCanciones)
         adapterRecycler = ipAdapter(this, callbackClick = {ip->
             //ocultarTeclado()
-            servicioVaimpIp.isVAIMP(ip.adress){
+            servicioVaimpIp.isVAIMP(ip.address){
                 if (it)
                 {
-                    app.repoVaimp!!.mainIp = ip.adress
+                    app.repoVaimp!!.mainIp = ip.address
                     app.repoVaimp!!.actualizarIp()
                     super.finish()
                 }
@@ -76,6 +77,7 @@ class IpSelectionActivity : AppCompatActivity() {
                     {
                         app.repoVaimp!!.mainIp = p0.toString()
                         app.repoVaimp!!.actualizarIp()
+                        app.repoVaimp!!.agregarIp(p0.toString())
                         this@IpSelectionActivity.finish()
                     }
                 }
@@ -90,9 +92,11 @@ class IpSelectionActivity : AppCompatActivity() {
 
             }
         }, 0, 1000)
+
+        logger.log("Fin IpSelectionActivity", "Flowlog")
     }
 
-    private fun busquedaIps(servicioVaimpIp: vaimpCallsService, refresh: SwipeRefreshLayout, app: App){
+    private fun busquedaIps(servicioVaimpIp: VaimpCalls, refresh: SwipeRefreshLayout, app: App){
         listaIps = ArrayList()
         adapterRecycler.actualizarLista(listaIps)
         for(i in app.repoVaimp!!.ips)
@@ -102,7 +106,7 @@ class IpSelectionActivity : AppCompatActivity() {
 
         for(i in listaIps)
         {
-            servicioVaimpIp.isVAIMP(i.adress) {
+            servicioVaimpIp.isVAIMP(i.address) {
                 i.online = it
                 runOnUiThread { adapterRecycler.actualizarLista(listaIps) }
             }
@@ -126,13 +130,12 @@ class IpSelectionActivity : AppCompatActivity() {
     }
 
     private fun llamarIp(
-        servicioVaimpIp: vaimpCallsService,
+        servicioVaimpIp: VaimpCalls,
         ipWithoutLast: String,
         i: Int,
         refresh: SwipeRefreshLayout
     ) {
         GlobalScope.launch(Dispatchers.IO) {
-            Log.d("ips", i.toString())
             servicioVaimpIp.isVAIMPnoAsync(ipWithoutLast + i + ":5045", {
                 if (it) {
                     val ip = IpListDC(ipWithoutLast + i + ":5045", true)
@@ -178,7 +181,7 @@ class IpSelectionActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ipVH, position: Int) {
             val ip = ips[position]
 
-            holder.tvNombre.text = ip.adress
+            holder.tvNombre.text = ip.address
             if (ip.online)
             {
                 holder.cView.setCardBackgroundColor(contexto.getColor(R.color.ipGreen))

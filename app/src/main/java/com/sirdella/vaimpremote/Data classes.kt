@@ -17,6 +17,6 @@ data class SongListDC (
 )
 
 data class IpListDC (
-    var adress: String = "",
+    var address: String = "",
     var online: Boolean = false
 )

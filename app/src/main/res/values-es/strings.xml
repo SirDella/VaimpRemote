@@ -4,4 +4,6 @@
     <string name="string_buscar">Buscar</string>
     <string name="ip_port">Ingrese una ip (ip:puerto)</string>
     <string name="update_available">Actualizacion disponible!</string>
+    <string name="check_server_online">Servidor en línea!</string>
+    <string name="check_server_online2">está en línea</string>
 </resources>
