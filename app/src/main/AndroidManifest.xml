@@ -12,8 +12,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
-
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -54,7 +52,7 @@
 
         <!--mediaSession-->
         <service
-            android:name="VaimpMediaService"
+            android:name="ServiceVaimp"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">
             <intent-filter>

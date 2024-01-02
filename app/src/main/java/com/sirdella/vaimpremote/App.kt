@@ -1,28 +1,42 @@
 package com.sirdella.vaimpremote
 
-import android.app.Activity
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
-import androidx.annotation.UiThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class App: Application() {
-    var repoVaimp: vaimpRepo? = null
+    var repoVaimp: VaimpData? = null
+    val logger = Logger(this)
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("cosas", "inicio app")
+        logger.DeleteLogs()
+        logger.log("Inicio App", "Flowlog")
 
         GlobalScope.launch(Dispatchers.IO) {
-            repoVaimp = vaimpRepo(applicationContext)
+            repoVaimp = VaimpData(applicationContext)
         }
-        Log.d("cosas", "fin app")
+
+        //notificacion:
+        val serviceChannel = NotificationChannel(
+            "canaldenatis",
+            "Vaimp Controls",
+            NotificationManager.IMPORTANCE_LOW
+        )
+        val checksChannel = NotificationChannel(
+            "notischecks",
+            "Background checks",
+            NotificationManager.IMPORTANCE_LOW
+        )
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(serviceChannel)
+        notificationManager.createNotificationChannel(checksChannel)
+
+        logger.log("Fin App", "Flowlog")
     }
 }
