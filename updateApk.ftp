@@ -1,0 +1,12 @@
+open 192.168.1.41 2121
+anonymous
+
+cd httpSv
+cd VaimpRemote
+binary
+put "D:\TGU\Programacion\Android\Apps\VaimpRemote\app\src\main\res\raw\buildnumber"
+put "D:\TGU\Programacion\Android\Apps\VaimpRemote\app\src\main\res\raw\changelog.md"
+put "D:\TGU\Programacion\Android\Apps\VaimpRemote\app\release\app-release.apk"
+put "D:\TGU\Programacion\Android\Apps\VaimpRemote\app\build\outputs\apk\debug\app-debug.apk"
+disconnect
+quit
